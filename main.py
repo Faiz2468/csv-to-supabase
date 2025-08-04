@@ -9,6 +9,10 @@ load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
+if not SUPABASE_URL or not SUPABASE_KEY:
+    print("❌ Missing Supabase URL or Key. Please check your config.env file.")
+    exit()
+
 # Connect to Supabase
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -27,6 +31,8 @@ for index, row in df.iterrows():
     data = row.to_dict()
     try:
         response = supabase.table("students").insert(data).execute()
-        print(f"✅ Row {index + 1} uploaded:", response)
+        print(f"✅ Row {index + 1} uploaded:", response.data)
     except Exception as e:
         print(f"❌ Error uploading row {index + 1}:", e)
+
+print("🎉 All rows uploaded successfully to Supabase.")
